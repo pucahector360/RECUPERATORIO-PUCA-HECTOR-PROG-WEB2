@@ -1,61 +1,66 @@
 import { useMemo, useState } from 'react'
-import { PCS, DOLAR } from '../data.js'
+// Nota: Cambiamos los nombres de las importaciones para que coincidan con los cursos
+import { CURSOS, DOLAR } from '../data.js' 
 
-const NIVELES = ['Todos', 'Oficina', 'Entry', 'Mid', 'High', 'Ultra']
-const MAX_PRECIO = Math.max(...PCS.map(p => p.precio))
+const AREAS = ['Todos', 'Tecnología', 'Oficios', 'Administración', 'Idiomas']
+const MAX_DURACION = Math.max(...CURSOS.map(c => c.horas))
 
 export default function Equipos() {
-  const [tier, setTier] = useState(-1)
-  const [max, setMax] = useState(MAX_PRECIO)
+  const [areaIndex, setAreaIndex] = useState(-1) // -1 significa "Todos"
+  const [maxHoras, setMaxHoras] = useState(MAX_DURACION)
   const [orden, setOrden] = useState('asc')
-  const [dolar, setDolar] = useState(DOLAR)
+  // Mantenemos el dolar por si quieres mostrar un costo de matrícula o similar
+  const [dolar, setDolar] = useState(DOLAR) 
 
   const lista = useMemo(
     () =>
-      PCS.filter(p => (tier < 0 || p.tier === tier) && p.precio <= max).sort((a, b) =>
-        orden === 'asc' ? a.precio - b.precio : b.precio - a.precio
+      CURSOS.filter(c => (areaIndex < 0 || c.area === AREAS[areaIndex + 1]) && c.horas <= maxHoras).sort((a, b) =>
+        orden === 'asc' ? a.horas - b.horas : b.horas - a.horas
       ),
-    [tier, max, orden]
+    [areaIndex, maxHoras, orden]
   )
 
   return (
     <section className="page">
       <div className="page-head">
-        <p className="hero-eyebrow">// Catálogo</p>
+        <p className="hero-eyebrow">// Oferta Académica</p>
         <h1>
-          PCs de <span className="grad">escritorio</span>
+          Cursos y <span className="grad">Capacitaciones</span>
         </h1>
         <p className="sub">
-          Precios de referencia. Ajustá la cotización para ver el valor en pesos.
+          Formación gratuita y de calidad para potenciar tu futuro profesional. Filtrá por área y duración.
         </p>
       </div>
 
-      <div className="chips" role="group" aria-label="Nivel">
-        {NIVELES.map((n, i) => (
+      {/* Filtros por Área */}
+      <div className="chips" role="group" aria-label="Área de estudio">
+        {AREAS.map((n, i) => (
           <button
             key={n}
-            className={tier === i - 1 ? 'chip on' : 'chip'}
-            onClick={() => setTier(i - 1)}
+            className={areaIndex === i - 1 ? 'chip on' : 'chip'}
+            onClick={() => setAreaIndex(i - 1)}
           >
             {n}
           </button>
         ))}
       </div>
 
+      {/* Herramientas de Filtro */}
       <div className="tools">
         <label className="range-label">
-          Presupuesto máximo: <b>US$ {max}</b>
+          Duración máxima: <b>{maxHoras} horas</b>
           <input
             type="range"
-            min="300"
-            max={MAX_PRECIO}
-            step="100"
-            value={max}
-            onChange={e => setMax(+e.target.value)}
+            min="10"
+            max={MAX_DURACION}
+            step="10"
+            value={maxHoras}
+            onChange={e => setMaxHoras(+e.target.value)}
           />
         </label>
+        {/* Dejamos el input del dólar por si decides mostrar algún costo administrativo */}
         <label>
-          Dólar (ARS)
+          Cotización Dólar (ARS)
           <input
             type="number"
             value={dolar}
@@ -63,27 +68,33 @@ export default function Equipos() {
           />
         </label>
         <select value={orden} onChange={e => setOrden(e.target.value)} aria-label="Ordenar">
-          <option value="asc">Menor precio</option>
-          <option value="desc">Mayor precio</option>
+          <option value="asc">Menor duración</option>
+          <option value="desc">Mayor duración</option>
         </select>
       </div>
 
+      {/* Grilla de Cursos */}
       <div className="grid">
-        {lista.map(pc => (
-          <article className="card pc-card" key={pc.id}>
+        {lista.map(curso => (
+          <article className="card pc-card" key={curso.id}>
             <div className="card-img">
-              <img src={pc.img} alt={pc.nombre} loading="lazy" />
+              <img src={curso.img} alt={curso.nombre} loading="lazy" />
             </div>
-            <h3>{pc.nombre}</h3>
-            <p className="meta">{pc.uso}</p>
+            <h3>{curso.nombre}</h3>
+            <p className="meta">{curso.descripcionCorta}</p>
+            
             <ul className="specs">
-              <li><span>CPU</span> {pc.cpu}</li>
-              <li><span>GPU</span> {pc.gpu}</li>
-              <li><span>RAM</span> {pc.ram}</li>
+              <li><span>Área</span> {curso.area}</li>
+              <li><span>Modalidad</span> {curso.modalidad}</li>
+              <li><span>Duración</span> {curso.horas} hs</li>
             </ul>
+
             <div className="price-block">
-              <p className="price"><b>US$ {pc.precio.toLocaleString('es-AR')}</b></p>
-              <p className="meta">≈ $ {(pc.precio * dolar).toLocaleString('es-AR')}</p>
+              {/* Como UPATECO suele ser gratuito, mostramos "Gratuito" o el costo si lo hubiera */}
+              <p className="price"><b>{curso.costo === 0 ? 'Gratuito' : `US$ ${curso.costo}`}</b></p>
+              {curso.costo > 0 && (
+                <p className="meta">≈ $ {(curso.costo * dolar).toLocaleString('es-AR')}</p>
+              )}
             </div>
           </article>
         ))}
@@ -91,7 +102,7 @@ export default function Equipos() {
 
       {!lista.length && (
         <p className="empty">
-          Ninguna PC cumple esos filtros. Subí el presupuesto o elegí otro nivel.
+          No hay cursos que coincidan con esos filtros. Probá aumentando la duración máxima o cambiando el área.
         </p>
       )}
     </section>
