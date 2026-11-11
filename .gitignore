@@ -1,5 +1,6 @@
 node_modules
 dist
+<<<<<<< HEAD
 dist-ssr
 *.local
 .env
@@ -11,3 +12,6 @@ yarn-debug.log*
 yarn-error.log*
 .vscode/*
 !.vscode/extensions.json
+=======
+.env
+>>>>>>> 9958fde5ca68f47da9973e36b7bbd5d9e7749ad0
