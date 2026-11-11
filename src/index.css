@@ -1,0 +1,120 @@
+:root {
+  --tinta: #10263d;
+  --azul: #1b4f8a;
+  --azul-oscuro: #0d3562;
+  --ambar: #f2b134;
+  --fondo: #f3f6fa;
+  --superficie: #ffffff;
+  --borde: #cfd9e6;
+  --texto: #1c2a3a;
+  --error: #b3261e;
+  --ok: #1e7a46;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Source Sans 3', system-ui, sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--texto);
+  background: var(--fondo);
+}
+
+h1, h2, .marca {
+  font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+  color: var(--tinta);
+  line-height: 1.15;
+}
+
+.contenedor { width: min(1120px, 100% - 2.5rem); margin-inline: auto; }
+
+/* Cabecera */
+.cabecera { background: var(--tinta); border-bottom: 4px solid var(--ambar); }
+.cabecera__interna {
+  display: flex; flex-wrap: wrap; align-items: baseline;
+  gap: .25rem 1rem; padding-block: 1rem;
+}
+.marca { color: #fff; font-size: 1.6rem; font-weight: 800; letter-spacing: .02em; }
+.marca__detalle { color: #c6d4e6; font-size: .95rem; }
+
+/* Presentación */
+.presentacion { padding-block: 3rem 1.5rem; }
+.presentacion h1 { font-size: clamp(1.9rem, 4vw, 2.8rem); font-weight: 800; margin: 0 0 .75rem; max-width: 20ch; }
+.presentacion p { margin: 0; max-width: 60ch; }
+
+/* Contacto: formulario + mapa lado a lado */
+.contacto {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding-block: 1.5rem 4rem;
+  align-items: stretch;
+}
+
+.formulario {
+  display: flex; flex-direction: column;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  padding: 2rem;
+}
+.formulario h2 { margin: 0 0 1rem; font-size: 1.5rem; font-weight: 700; }
+.formulario label { font-weight: 600; margin: .9rem 0 .3rem; }
+
+.formulario input,
+.formulario textarea {
+  font: inherit;
+  padding: .7rem .85rem;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  background: #fbfcfe;
+  color: var(--texto);
+}
+.formulario textarea { resize: vertical; min-height: 120px; }
+
+.formulario input:focus-visible,
+.formulario textarea:focus-visible,
+.formulario button:focus-visible {
+  outline: 3px solid var(--ambar);
+  outline-offset: 2px;
+  border-color: var(--azul);
+}
+
+.formulario button {
+  margin-top: 1.5rem;
+  padding: .85rem 1.25rem;
+  font: 700 1rem 'Source Sans 3', sans-serif;
+  color: #fff;
+  background: var(--azul);
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.formulario button:hover:not(:disabled) { background: var(--azul-oscuro); }
+.formulario button:disabled { opacity: .65; cursor: progress; }
+
+.aviso { min-height: 1.5rem; margin: .9rem 0 0; font-weight: 600; }
+.aviso--enviado { color: var(--ok); }
+.aviso--error { color: var(--error); }
+
+.mapa {
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 420px;
+  background: var(--superficie);
+}
+.mapa iframe { width: 100%; height: 100%; min-height: 420px; border: 0; display: block; }
+
+/* Pie */
+.pie { background: var(--tinta); color: #c6d4e6; padding-block: 1.25rem; font-size: .95rem; }
+.pie p { margin: 0; }
+
+/* Móvil: el mapa pasa debajo del formulario */
+@media (max-width: 800px) {
+  .contacto { grid-template-columns: 1fr; }
+  .formulario { padding: 1.5rem; }
+}
